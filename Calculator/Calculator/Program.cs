@@ -34,13 +34,20 @@ static double OperationSolve(string operation)
             Memory.currentMemory += first * second;
             return first * second;
         case "/":
-            Memory.currentMemory += first / second;
+            if (second == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Деление на 0 невозможно, выберите другое число");
+                Console.ResetColor();
+                return double.MaxValue;
+            }
+            Memory.currentMemory += first / second;     
             return first / second;
         case "%":
             Memory.currentMemory += first % second;
             return first % second;
         default:
-            return -99999999;
+            return double.MaxValue;
     }
 }
 static double OperationResult()
@@ -58,6 +65,13 @@ static double OperationResult()
             return OperationSolve(operation);
         case "1/x":
             num = NumberRequest();
+            if (num == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Деление на 0 невозможно, выберите другое число");
+                Console.ResetColor();
+                return double.MaxValue;
+            }
             Memory.currentMemory += 1/num;
             return 1 / num;
         case "x^2":
@@ -77,13 +91,25 @@ static double OperationResult()
         case "MR":
             Console.WriteLine(Memory.memory);
             break;
+        default:
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Введена неверная операция, ведите предложенную из списка");
+            Console.ResetColor();
+            return double.MaxValue;
     }
-    return -52;
+    return double.MaxValue;
 }
-while (true)
+bool flag = true;
+while (flag)
 {
-    OperationResult();
-    
+    double result = OperationResult();
+    if (result == double.MaxValue)
+    {
+        continue;
+    }
+    Console.WriteLine($"Результат операции {result}");
+    Console.WriteLine("Для продолжения нажмите 1");
+    flag = Console.ReadLine() == "1";
 }
 
 static class Memory
